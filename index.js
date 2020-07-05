@@ -2,7 +2,7 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const bodyParser = require('body-parser');
-var util = require('util')
+
 
 const uuid = require('uuid');
 
@@ -11,9 +11,8 @@ const line = require('@line/bot-sdk');
 
 const dialogflow = require('dialogflow');
 
-const middleware = require('@line/bot-sdk').middleware
-const JSONParseError = require('@line/bot-sdk').JSONParseError
-const SignatureValidationFailed = require('@line/bot-sdk').SignatureValidationFailed
+//B
+pg.defaults.ssl = true;
 
 const config = {
   channelAccessToken: configfile.linechannelAccessToken,
@@ -41,22 +40,12 @@ express()
   .use(bodyParser.json())
   
 
-  // .post('/webhook/', (req, res) => {
-  //   //console.log(util.inspect(req));
-  //   Promise
-  //     .all(req.body.events.map(handleEvent))
-  //     .then((result) => res.json(result))
-  //     .catch((err) => {
-  //       console.error(err);
-  //       res.status(500).end();
-  //     });
-  // })
 
   .post('/webhook/', (req, res) => {
-    //console.log(util.inspect(req));
+    
     try {
       req.body.events.map(handleEvent)
-      //(result) => res.json(result)
+      
     } catch (err) {
       console.error(err);
         res.status(500).end();
@@ -72,18 +61,7 @@ express()
 
   // event handler
 function handleEvent(event) {
-  // if (event.type !== 'message' || event.message.type !== 'text') {
-  //   // ignore non-text-message event
-  //   return Promise.resolve(null);
-  // }
-
-  // create a echoing text message
-  //const echo = { type: 'text', text: event.message.text };
-
-  // use reply API
-  //return client.replyMessage(event.replyToken, echo);
-
-
+  
   if (event.replyToken && event.replyToken.match(/^(.)\1*$/)) {
     return console.log("Test hook recieved: " + JSON.stringify(event.message));
   }
@@ -109,14 +87,9 @@ function handleEvent(event) {
           if (messageText) {
             //send message to api.ai @@ gửi nó đến DialogFlow
             sendToDialogFlow(senderID, messageText,event.replyToken); 
-          }
-
-          // create a echoing text message
-          //const echo = { type: 'text', text: event.message.text };
-
-          // use reply API
-          //return client.replyMessage(event.replyToken, echo);
+          }          
          break;
+
         default:
           throw new Error(`Unknown message: ${JSON.stringify(message)}`);
       }
@@ -128,13 +101,11 @@ function handleEvent(event) {
 
 }
 
-// function handleText(message, replyToken, source) {
 
-// }
 
 async function sendToDialogFlow(sender, textString, replyToken, params) {  
 
-  //sendTypingOn(sender);//để cái chat mess hiển thị dấu ... nhấp nháy như thể ai đang gõ
+  
 
   try { //try này giúp dialogFlow theo dõi cụ thể ng dùng trong cái sesion đó
       const sessionPath = sessionClient.sessionPath(
@@ -175,7 +146,7 @@ async function sendToDialogFlow(sender, textString, replyToken, params) {
 
 function handleDialogFlowResponse(sender, response, replyToken) {
   // phân tích cái mà dialogFlow gửi về
-  console.log(response);
+  //console.log(response);
   let responseText = response.fulfillmentMessages.fulfillmentText;
 
   let messages = response.fulfillmentMessages;
@@ -185,53 +156,33 @@ function handleDialogFlowResponse(sender, response, replyToken) {
   console.log(JSON.stringify(responseText));
   
 
-  //sendTypingOff(sender);
-
   if (isDefined(action)) {
       handleDialogFlowAction(sender, action, messages, contexts, parameters, replyToken);
       console.log('handleDialogFlowResponse defined action'); 
   } else if (isDefined(messages)) {
-      handleMessages(messages, sender);
-      console.log('handleDialogFlowResponse defined messages');
+      handleMessages(messages, replyToken);//////////////////////////////////////
+      console.log('handleDialogFlowResponse defined messages-if not setting action on DF');
       
   } 
-  
-  // else if (responseText == '' && !isDefined(action)) {
-  //     //dialogflow could not evaluate input.Nếu ko hiểu đc
-  //     sendTextMessage(sender, "I'm not sure what you want. Can you be more specific?");
-  //     console.log('handleDialogFlowResponse defined error dont understand ');
-  // } else if (isDefined(responseText)) {
-  //     sendTextMessage(sender, responseText);
-  //     console.log('handleDialogFlowResponse defined responseText and send it to user ');      
-  // }
 }
 
 function handleDialogFlowAction(sender, action, messages, contexts, parameters,replyToken) {
   switch (action) {    
 
+    case 'test':
+      console.log('da vao dc default case');
+      addUser2DB(sender,replyToken);
+      break;
+
     default:
       console.log('da vao dc default case');
       console.log(replyToken);   
-      console.log(JSON.stringify(messages));       
+      //console.log(JSON.stringify(messages));       
       handleMessages( messages,replyToken);
     
   }  
 }
 
-// function handleMessages(token, texts) {
-//   texts = Array.isArray(texts) ? texts : [texts];
-//   return client.replyMessage(
-//     token,
-//     texts.map((text) => ({ type: 'text', text }))
-//   );
-
-//   //create a echoing text message
-//   ///const echo = { type: 'text', text: texts };
-
-//   //use reply API
-//   //return client.replyMessage(token, echo);
-
-// }
 
 function handleMessages(messages, sender) {
   
@@ -266,11 +217,63 @@ function handleMessage(message, token) {
 function sendTextMessage(token, texts) {
   texts = Array.isArray(texts) ? texts : [texts];
 
-  console.log(texts);
+  console.log("da gui tin nhan ");
   return client.replyMessage(
     token,
     texts.map((text) => ({ type: 'text', text }))
   );
+}
+
+function addUser2DB(userId, replyToken){
+  client.getProfile(userId)
+  .then((profile) => {
+    console.log(profile.displayName);
+    console.log(profile.userId);
+    console.log(profile.pictureUrl);
+    console.log(profile.statusMessage);
+    
+    if (profile.displayName) {
+          
+      var pool = new pg.Pool(configfile.PG_CONFIG);
+      pool.connect(function(err, client, done) {
+          if (err) {
+              return console.error('Error acquiring client', err.stack);
+          }
+          var rows = [];
+          client.query(`SELECT line_userid FROM users_line WHERE line_userid='${userId}' LIMIT 1`,
+              function(err, result) {
+                  if (err) {
+                      console.log('Query error: ' + err);
+                  } else {
+                      if (result.rows.length === 0) {
+                          let sql = 'INSERT INTO users_line (line_userid, displayName, pictureUrl, statusMessage) ' +
+                              'VALUES ($1, $2, $3, $4)';
+                          client.query(sql,
+                              [
+                                  userId,
+                                  profile.displayName,
+                                  profile.pictureUrl,
+                                  profile.statusMessage
+                              ]);
+                      }
+                  }
+              });
+          
+      });
+      pool.end();
+      
+      sendTextMessage(replyToken,"da xong");
+      
+    } 
+  })
+  .catch((err) => {
+    // error handling
+    //console.log(err);
+  });
+
+
+  
+
 }
 
 function isDefined(obj) {
