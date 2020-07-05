@@ -25,7 +25,7 @@ express()
   
 
   .post('/webhook/', (req, res) => {
-    util.inspect(req);
+    console.log(util.inspect(req));
     Promise
       .all(req.body.events.map(handleEvent))
       .then((result) => res.json(result))
