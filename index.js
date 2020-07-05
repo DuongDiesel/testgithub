@@ -44,14 +44,47 @@ express()
 
   // event handler
 function handleEvent(event) {
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    // ignore non-text-message event
-    return Promise.resolve(null);
-  }
+  // if (event.type !== 'message' || event.message.type !== 'text') {
+  //   // ignore non-text-message event
+  //   return Promise.resolve(null);
+  // }
 
   // create a echoing text message
-  const echo = { type: 'text', text: event.message.text };
+  //const echo = { type: 'text', text: event.message.text };
 
   // use reply API
-  return client.replyMessage(event.replyToken, echo);
+  //return client.replyMessage(event.replyToken, echo);
+
+
+  if (event.replyToken && event.replyToken.match(/^(.)\1*$/)) {
+    return console.log("Test hook recieved: " + JSON.stringify(event.message));
+  }
+
+  switch (event.type) {
+    case 'message':
+      const message = event.message;
+      switch (message.type) {
+        case 'text':
+          //return handleText(message, event.replyToken, event.source);
+          // create a echoing text message
+          const echo = { type: 'text', text: event.message.text };
+
+          // use reply API
+          return client.replyMessage(event.replyToken, echo);
+        
+        default:
+          throw new Error(`Unknown message: ${JSON.stringify(message)}`);
+      }    
+
+    default:
+      throw new Error(`Unknown event: ${JSON.stringify(event)}`);
+  }
+
 }
+
+// function handleText(message, replyToken, source) {
+
+// }
+
+
+
