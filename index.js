@@ -20,9 +20,9 @@ const client = new line.Client(config);
 express()
   .use(express.static(path.join(__dirname, 'public')))
 
-  .use(middleware(config))
+  
 
-  .post('/webhook/', line.middleware(config), (req, res) => {
+  .post('/webhook/', (req, res) => {
     Promise
       .all(req.body.events.map(handleEvent))
       .then((result) => res.json(result))
