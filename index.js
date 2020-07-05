@@ -23,6 +23,7 @@ express()
   
 
   .post('/webhook/', (req, res) => {
+    console.log(JSON.stringify(req));
     Promise
       .all(req.body.events.map(handleEvent))
       .then((result) => res.json(result))
