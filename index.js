@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 const bodyParser = require('body-parser');
+var util = require('util')
 
 //const config = require('./config');
 const line = require('@line/bot-sdk');
@@ -24,7 +25,7 @@ express()
   
 
   .post('/webhook/', (req, res) => {
-    console.log(JSON.stringify(req));
+    util.inspect(req);
     Promise
       .all(req.body.events.map(handleEvent))
       .then((result) => res.json(result))
