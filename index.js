@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 5000
 const bodyParser = require('body-parser');
 var util = require('util')
 
-//const config = require('./config');
+const configfile = require('./config');
 const line = require('@line/bot-sdk');
 
 const middleware = require('@line/bot-sdk').middleware
@@ -12,8 +12,8 @@ const JSONParseError = require('@line/bot-sdk').JSONParseError
 const SignatureValidationFailed = require('@line/bot-sdk').SignatureValidationFailed
 
 const config = {
-  channelAccessToken: "Wdpil7pCXn0op3JRgmNOc5XfZK3wAMKsBmfRJs9Vequy1XRLspbd/mVVvU9npoGhbFKB5PL1G0SthiURGs/Jhbb3Qx53BWAkokWs7rKwc6Dr4HwEl+iBMAmqSpseEyqkbkPqok2/OmYny1WRwltBdgdB04t89/1O/w1cDnyilFU=",
-  channelSecret: "aca85f39faf12058882f5cb5a67230c7"
+  channelAccessToken: configfile.linechannelAccessToken,
+  channelSecret: configfile.linechannelSecret
 };
 
 // create LINE SDK client
