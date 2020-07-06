@@ -223,6 +223,25 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
+    case 'temp3':
+      console.log('da vao dc temp3')
+      let filteredContextsTemp3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('isubmit_bodytemp-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsTemp3.length > 0 && contexts[0].parameters){
+
+        let bodytemperature = (contexts[0].parameters.fields['bodytemperature']) && contexts[0].parameters.fields['bodytemperature'] !='' ? contexts[0].parameters.fields["bodytemperature"].stringValue : '';        
+        
+        let senddataTemp3 = {
+          bodytemperature:bodytemperature,            
+          temp_time:timeOfMessage                    
+        };
+
+        updateInfoTemp(sender,senddataTemp3);
+        handleMessages( messages,replyToken);        
+      }
+    break;
+
     default:
       console.log('da vao dc default case');
       console.log(replyToken);   
@@ -317,8 +336,7 @@ function start(userId, replyToken){
     } 
   })
   .catch((err) => {
-    // error handling
-    //console.log(err);
+    
   });
 
 }
@@ -345,7 +363,7 @@ function updateInfoUser(line_id,senddata) {
 
   });
   pool.end();  
-	
+	//tao 1 cai query lay gia tri cua ca cai cot vua in vao xong in gtri do ra mot bang khac de backup
 }
 
 function updateInfoSafe(line_id,senddata) {
@@ -367,6 +385,30 @@ function updateInfoSafe(line_id,senddata) {
           senddata.safemess,
           senddata.time_update          
           
+        ]);
+
+  });
+  pool.end();  
+	
+}
+
+function updateInfoTemp(line_id,senddata) {
+  console.log('da vao addinfoTemp3 vs line_id ben duoi');
+  console.log(line_id);
+
+  var pool = new pg.Pool(configfile.PG_CONFIG);
+  pool.connect(function(err, client, done) {
+    if (err) {
+        return console.error('Error acquiring client', err.stack);
+    }
+      let sql = 'INSERT INTO temp_check (line_id, temp, temp_time) ' + 'VALUES ($1, $2, $3)';
+                                  
+    client.query(sql,
+        [
+          line_id,
+          senddata.bodytemperature,
+          senddata.temp_time
+                    
         ]);
 
   });
