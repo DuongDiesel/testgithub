@@ -87,7 +87,7 @@ function handleEvent(event) {
           var messageText = message.text;
           if (messageText) {
             //send message to api.ai @@ gửi nó đến DialogFlow
-            sendToDialogFlow(senderID, messageText,event.replyToken); 
+            sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
           }          
          break;
 
@@ -104,7 +104,7 @@ function handleEvent(event) {
 
 
 
-async function sendToDialogFlow(sender, textString, replyToken, params) {  
+async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, params) {  
 
   
 
@@ -135,7 +135,7 @@ async function sendToDialogFlow(sender, textString, replyToken, params) {
       
       // đọc cái mà dialogflow gửi cho ta
       const result = responses[0].queryResult;
-      handleDialogFlowResponse(sender, result, replyToken);
+      handleDialogFlowResponse(sender, result, replyToken,timeOfMessage);
       
       console.log(' da vao sendToDialogFlow')
   } catch (e) {
@@ -145,7 +145,7 @@ async function sendToDialogFlow(sender, textString, replyToken, params) {
 
 }
 
-function handleDialogFlowResponse(sender, response, replyToken) {
+function handleDialogFlowResponse(sender, response, replyToken,timeOfMessage) {
   // phân tích cái mà dialogFlow gửi về
   //console.log(response);
   let responseText = response.fulfillmentMessages.fulfillmentText;
@@ -158,7 +158,7 @@ function handleDialogFlowResponse(sender, response, replyToken) {
   
 
   if (isDefined(action)) {
-      handleDialogFlowAction(sender, action, messages, contexts, parameters, replyToken);
+      handleDialogFlowAction(sender, action, messages, contexts, parameters, replyToken,timeOfMessage);
       console.log('handleDialogFlowResponse defined action'); 
   } else if (isDefined(messages)) {
       handleMessages(messages, replyToken);//////////////////////////////////////
@@ -167,12 +167,35 @@ function handleDialogFlowResponse(sender, response, replyToken) {
   } 
 }
 
-function handleDialogFlowAction(sender, action, messages, contexts, parameters,replyToken) {
+function handleDialogFlowAction(sender, action, messages, contexts, parameters,replyToken, timeOfMessage) {
   switch (action) {    
 
     case 'test':
       console.log('da vao dc default case');
       addUser2DB(sender,replyToken);
+      break;
+
+      case 'safe3':
+        console.log('da vao dc safe3')
+        let filteredContextsSafe3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+          return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+        });
+        if (filteredContextsSafe3.length > 0 && contexts[0].parameters){
+  
+          let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
+          let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
+          let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
+
+          let senddataSafe3 = {
+            issafe:issafe,          
+            safelocation:safelocation,
+            safemess:safemess,
+            time_update:timeOfMessage                    
+          };
+  
+          updateInfoSafe(sender,senddataSafe3);
+          handleMessages( messages,replyToken);        
+        }
       break;
 
     default:
@@ -272,9 +295,32 @@ function addUser2DB(userId, replyToken){
     //console.log(err);
   });
 
+}
 
-  
+function updateInfoSafe(line_id,senddata) {
+  console.log('da vao addinfosafe vs fb_id ben duoi');
+  console.log(line_id);
 
+  var pool = new pg.Pool(configfile.PG_CONFIG);
+  pool.connect(function(err, client, done) {
+    if (err) {
+        return console.error('Error acquiring client', err.stack);
+    }
+      let sql = 'INSERT INTO safe_check (line_id, is_safe, safe_location, safe_mess, time_update) ' + 'VALUES ($1, $2, $3, $4, $5)';
+                                  
+    client.query(sql,
+        [
+          line_id,
+          senddata.issafe,
+          senddata.safelocation,
+          senddata.safemess,
+          senddata.time_update          
+          
+        ]);
+
+  });
+  pool.end();  
+	
 }
 
 function isDefined(obj) {
