@@ -170,11 +170,13 @@ function handleDialogFlowResponse(sender, response, replyToken,timeOfMessage) {
 function handleDialogFlowAction(sender, action, messages, contexts, parameters,replyToken, timeOfMessage) {
   switch (action) {    
 
-    case 'test':
-      console.log('da vao dc default case');
-      addUser2DB(sender,replyToken);
+    case 'start':
+      console.log('da vao dc start');
+      start(sender);
+      handleMessages( messages,replyToken);    
       break;
 
+    
     case 'sub3':
       console.log('da vao dc sub3')
       let filteredContextsSub3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
@@ -193,7 +195,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
           time_update:timeOfMessage          
         };
 
-        addUser2DB(sender,replyToken,senddataSub3);
+        updateInfoUser(sender,senddataSub3);
         handleMessages( messages,replyToken);     
       }
     break;
@@ -271,7 +273,7 @@ function sendTextMessage(token, texts) {
   );
 }
 
-function addUser2DB(userId, replyToken,senddataSub3){
+function start(userId, replyToken){
   client.getProfile(userId)
   .then((profile) => {
     //console.log(profile.displayName);
@@ -293,18 +295,15 @@ function addUser2DB(userId, replyToken,senddataSub3){
                       console.log('Query error: ' + err);
                   } else {
                       if (result.rows.length === 0) {
-                          let sql = 'INSERT INTO users_line (line_userid, displayname, pictureurl, statusmessage, time_update, user_id, user_name, user_address) ' +
-                              'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+                          let sql = 'INSERT INTO users_line (line_userid, displayname, pictureurl, statusmessage) ' +
+                              'VALUES ($1, $2, $3, $4)';
                           client.query(sql,
                               [
                                   userId,
                                   profile.displayName,
                                   profile.pictureUrl,
                                   profile.statusMessage,
-                                  senddataSub3.time_update,
-                                  senddataSub3.userID,
-                                  senddataSub3.username,
-                                  senddataSub3.userAdds
+                                  
                               ]);
                       }
                   }
@@ -322,6 +321,31 @@ function addUser2DB(userId, replyToken,senddataSub3){
     //console.log(err);
   });
 
+}
+
+function updateInfoUser(line_id,senddata) {
+  console.log('da vao updateUserinfo vs line_id ben duoi');
+  console.log(line_id);
+
+  var pool = new pg.Pool(configfile.PG_CONFIG);
+  pool.connect(function(err, client, done) {
+    if (err) {
+        return console.error('Error acquiring client', err.stack);
+    }
+    let sql = 'UPDATE public.users_line SET user_name=$1, user_id=$2, user_address=$3, time_update=$4 WHERE line_userid=$5';
+
+    client.query(sql,
+        [
+          senddata.username,
+          senddata.userID,
+          senddata.userAdd, 
+          senddata.time_update,
+          line_id
+        ]);
+
+  });
+  pool.end();  
+	
 }
 
 function updateInfoSafe(line_id,senddata) {
