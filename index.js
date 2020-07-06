@@ -175,28 +175,51 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       addUser2DB(sender,replyToken);
       break;
 
-      case 'safe3':
-        console.log('da vao dc safe3')
-        let filteredContextsSafe3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
-          return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
-        });
-        if (filteredContextsSafe3.length > 0 && contexts[0].parameters){
-  
-          let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
-          let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
-          let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
+    case 'sub3':
+      console.log('da vao dc sub3')
+      let filteredContextsSub3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('isubmit_userinfo-yes-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsSub3.length > 0 && contexts[0].parameters){
 
-          let senddataSafe3 = {
-            issafe:issafe,          
-            safelocation:safelocation,
-            safemess:safemess,
-            time_update:timeOfMessage                    
-          };
-  
-          updateInfoSafe(sender,senddataSafe3);
-          handleMessages( messages,replyToken);        
-        }
-      break;
+        let username = (contexts[0].parameters.fields['username']) && contexts[0].parameters.fields['username'] !='' ? contexts[0].parameters.fields["username"].stringValue : '';        
+        let userID = (contexts[0].parameters.fields['userID']) && contexts[0].parameters.fields['userID'] !='' ? contexts[0].parameters.fields["userID"].stringValue : '';
+        let userAdd = (contexts[0].parameters.fields['userAdd']) && contexts[0].parameters.fields['userAdd'] !='' ? contexts[0].parameters.fields["userAdd"].stringValue : '';        
+        
+        let senddataSub3 = {
+          username:username,          
+          userID:userID,
+          userAdd:userAdd,
+          time_update:timeOfMessage          
+        };
+
+        addUser2DB(sender,replyToken,senddataSub3);
+        handleMessages( messages,replyToken);     
+      }
+    break;
+
+    case 'safe3':
+      console.log('da vao dc safe3')
+      let filteredContextsSafe3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsSafe3.length > 0 && contexts[0].parameters){
+
+        let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
+        let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
+        let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
+
+        let senddataSafe3 = {
+          issafe:issafe,          
+          safelocation:safelocation,
+          safemess:safemess,
+          time_update:timeOfMessage                    
+        };
+
+        updateInfoSafe(sender,senddataSafe3);
+        handleMessages( messages,replyToken);        
+      }
+    break;
 
     default:
       console.log('da vao dc default case');
@@ -248,13 +271,13 @@ function sendTextMessage(token, texts) {
   );
 }
 
-function addUser2DB(userId, replyToken){
+function addUser2DB(userId, replyToken,senddataSub3){
   client.getProfile(userId)
   .then((profile) => {
-    console.log(profile.displayName);
+    //console.log(profile.displayName);
     console.log(profile.userId);
-    console.log(profile.pictureUrl);
-    console.log(profile.statusMessage);
+    //console.log(profile.pictureUrl);
+    //console.log(profile.statusMessage);
     
     if (profile.displayName) {
           
@@ -270,14 +293,18 @@ function addUser2DB(userId, replyToken){
                       console.log('Query error: ' + err);
                   } else {
                       if (result.rows.length === 0) {
-                          let sql = 'INSERT INTO users_line (line_userid, displayname, pictureurl, statusmessage) ' +
-                              'VALUES ($1, $2, $3, $4)';
+                          let sql = 'INSERT INTO users_line (line_userid, displayname, pictureurl, statusmessage, time_update, user_id, user_name, user_address) ' +
+                              'VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
                           client.query(sql,
                               [
                                   userId,
                                   profile.displayName,
                                   profile.pictureUrl,
-                                  profile.statusMessage
+                                  profile.statusMessage,
+                                  senddataSub3.time_update,
+                                  senddataSub3.userID,
+                                  senddataSub3.username,
+                                  senddataSub3.userAdds
                               ]);
                       }
                   }
@@ -286,7 +313,7 @@ function addUser2DB(userId, replyToken){
       });
       pool.end();
       
-      sendTextMessage(replyToken,"da xong");
+      //sendTextMessage(replyToken,"da xong");
       
     } 
   })
