@@ -3,6 +3,7 @@ const path = require('path')
 const PORT = process.env.PORT || 5000
 const bodyParser = require('body-parser');
 
+const pg = require('pg');
 
 const uuid = require('uuid');
 
@@ -246,7 +247,7 @@ function addUser2DB(userId, replyToken){
                       console.log('Query error: ' + err);
                   } else {
                       if (result.rows.length === 0) {
-                          let sql = 'INSERT INTO users_line (line_userid, displayName, pictureUrl, statusMessage) ' +
+                          let sql = 'INSERT INTO users_line (line_userid, displayname, pictureurl, statusmessage) ' +
                               'VALUES ($1, $2, $3, $4)';
                           client.query(sql,
                               [
