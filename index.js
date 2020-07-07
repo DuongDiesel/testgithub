@@ -230,7 +230,35 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
-    
+    case 'safe2':       
+
+      console.log('da vao dc safe2')
+      let filteredContextsSafe2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsSafe2.length > 0 && contexts[0].parameters){
+
+        let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
+        let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
+        let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
+        if (issafe != '' && safelocation != '' && safemess != '') {
+          console.log('da vao dc safe2 if1')
+          //console.log(messages[messages.length - 1]);
+          //handleMessages( messages,replyToken);
+          //send button
+          sendButtonMessageSub2(replyToken,messages);
+
+        }else{
+          console.log('da vao dc safe2 if2')
+          handleMessages( messages,replyToken);
+        }
+          
+      }else{
+        console.log('da vao dc safe2 if3')
+        handleMessages( messages,replyToken);
+      }
+      
+    break;
 
     case 'safe3':
       console.log('da vao dc safe3')
@@ -398,6 +426,32 @@ function sendButtonMessageSub2(token,messages) {
           
           { label: '確認', type: 'message', text: '確認' },
           { label: 'やり直し', type: 'message', text: 'やり直し' }
+        ],
+      },
+    }
+  );
+}
+
+function sendButtonMessageSafe(token,messages) {
+  
+  console.log("da gui button safe or not ");
+  //console.log(messages);
+  //console.log(messages[messages.length - 1]);
+  //console.log(messages[messages.length - 1].text.text[0].length);  
+  return client.replyMessage(
+    token,
+    {
+      type: 'template',
+      altText: 'Buttons alt text',
+      template: {
+        type: 'buttons',
+        
+        title: '今の安否状況は？',
+        text: '',
+        actions: [
+          
+          { label: 'Safe', type: 'message', text: 'safe' },
+          { label: 'Not safe', type: 'message', text: 'not safe' }
         ],
       },
     }
