@@ -176,6 +176,36 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       handleMessages( messages,replyToken);    
       break;
 
+    case 'sub2':       
+
+      console.log('da vao dc sub2')
+      let filteredContextsSub2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('isubmit_userinfo-yes-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsSub2.length > 0 && contexts[0].parameters){
+
+        let username = (contexts[0].parameters.fields['username']) && contexts[0].parameters.fields['username'] !='' ? contexts[0].parameters.fields["username"].stringValue : '';        
+        let userID = (contexts[0].parameters.fields['userID']) && contexts[0].parameters.fields['userID'] !='' ? contexts[0].parameters.fields["userID"].stringValue : '';
+        let userAdd = (contexts[0].parameters.fields['userAdd']) && contexts[0].parameters.fields['userAdd'] !='' ? contexts[0].parameters.fields["userAdd"].stringValue : '';        
+        
+        if (username !== '' && userID !== '' && userAdd !== '') {
+          console.log('da vao dc sub2 if1');
+          //handleMessages( messages,replyToken);
+          //send button
+          sendButtonMessageSub2(replyToken,messages);
+
+        }else{
+          console.log('da vao dc sub2 if2')
+          handleMessages( messages,replyToken);
+        }
+          
+      }else{
+        console.log('da vao dc sub2 if3');
+        handleMessages( messages,replyToken);
+      }
+      
+    break;
+    
     
     case 'sub3':
       console.log('da vao dc sub3')
@@ -200,6 +230,8 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
+    
+
     case 'safe3':
       console.log('da vao dc safe3')
       let filteredContextsSafe3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
@@ -223,8 +255,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
       
-    case 'temp2':
-       
+    case 'temp2':       
 
       console.log('da vao dc temp２')
       let filteredContextsTemp2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
@@ -304,7 +335,7 @@ function handleMessage(message, token) {
             message.text.text.forEach((text) => {
                 if (text !== '') {
                     sendTextMessage(token, text);
-                    console.log(text);
+                    //console.log(text);
                 }
             });
             break;        
@@ -326,10 +357,7 @@ function sendButtonMessage(token,messages) {
   console.log("da gui button ");
   //console.log(messages);
   //console.log(messages[messages.length - 1]);
-  //console.log(messages[messages.length - 1].quickReplies.title);
-  
-
-  
+  console.log(messages[messages.length - 1].quickReplies.title);  
   return client.replyMessage(
     token,
     {
@@ -343,7 +371,33 @@ function sendButtonMessage(token,messages) {
         actions: [
           
           { label: '確認', type: 'message', text: '確認' },
-          { label: 'やり直し', type: 'message', text: 'やり直し' },
+          { label: 'やり直し', type: 'message', text: 'やり直し' }
+        ],
+      },
+    }
+  );
+}
+
+function sendButtonMessageSub2(token,messages) {
+  
+  console.log("da gui button sub2 ");
+  //console.log(messages);
+  //console.log(messages[messages.length - 1]);
+  console.log(messages[messages.length - 1].text.text[0].length);  
+  return client.replyMessage(
+    token,
+    {
+      type: 'template',
+      altText: 'Buttons alt text',
+      template: {
+        type: 'buttons',
+        
+        title: '入力した情報を確認してください。',
+        text: messages[messages.length - 1].text.text[0],
+        actions: [
+          
+          { label: '確認', type: 'message', text: '確認' },
+          { label: 'やり直し', type: 'message', text: 'やり直し' }
         ],
       },
     }
