@@ -222,6 +222,35 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         handleMessages( messages,replyToken);        
       }
     break;
+      
+    case 'temp2':
+       
+
+      console.log('da vao dc temp２')
+      let filteredContextsTemp2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('isubmit_bodytemp-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsTemp2.length > 0 && contexts[0].parameters){
+
+        let bodytemperature2 = (contexts[0].parameters.fields['bodytemperature']) && contexts[0].parameters.fields['bodytemperature'] !='' ? contexts[0].parameters.fields["bodytemperature"].stringValue : '';        
+        
+        if(bodytemperature2 !== ''){
+          console.log('da vao dc temp２ if1')
+          //handleMessages( messages,replyToken);
+          //send button
+          sendButtonMessage(replyToken,messages);
+
+        }else{
+          console.log('da vao dc temp２ if2')
+          handleMessages( messages,replyToken);
+        }
+          
+      }else{
+        console.log('da vao dc temp２ if3')
+        handleMessages( messages,replyToken);
+      }
+      
+    break;
 
     case 'temp3':
       console.log('da vao dc temp3')
@@ -230,10 +259,10 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       });
       if (filteredContextsTemp3.length > 0 && contexts[0].parameters){
 
-        let bodytemperature = (contexts[0].parameters.fields['bodytemperature']) && contexts[0].parameters.fields['bodytemperature'] !='' ? contexts[0].parameters.fields["bodytemperature"].stringValue : '';        
+        let bodytemperature3 = (contexts[0].parameters.fields['bodytemperature']) && contexts[0].parameters.fields['bodytemperature'] !='' ? contexts[0].parameters.fields["bodytemperature"].stringValue : '';        
         
         let senddataTemp3 = {
-          bodytemperature:bodytemperature,            
+          bodytemperature:bodytemperature3,            
           temp_time:timeOfMessage                    
         };
 
@@ -289,6 +318,35 @@ function sendTextMessage(token, texts) {
   return client.replyMessage(
     token,
     texts.map((text) => ({ type: 'text', text }))
+  );
+}
+
+function sendButtonMessage(token,messages) {
+  
+  console.log("da gui button ");
+  //console.log(messages);
+  //console.log(messages[messages.length - 1]);
+  //console.log(messages[messages.length - 1].quickReplies.title);
+  
+
+  
+  return client.replyMessage(
+    token,
+    {
+      type: 'template',
+      altText: 'Buttons alt text',
+      template: {
+        type: 'buttons',
+        
+        title: 'ご確認下さい',
+        text: messages[messages.length - 1].quickReplies.title,
+        actions: [
+          
+          { label: '確認', type: 'message', text: '確認' },
+          { label: 'やり直し', type: 'message', text: 'やり直し' },
+        ],
+      },
+    }
   );
 }
 
