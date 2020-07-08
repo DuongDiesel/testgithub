@@ -330,6 +330,25 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
+    case 'comment3':
+      console.log('da vao dc comment3')
+      let filteredContextsComment3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
+        return el.name.includes('isubmit_comment-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
+      });
+      if (filteredContextsComment3.length > 0 && contexts[0].parameters){
+
+        let comment3 = (contexts[0].parameters.fields['line_comment']) && contexts[0].parameters.fields['line_comment'] !='' ? contexts[0].parameters.fields["line_comment"].stringValue : '';        
+        
+        let senddataComment3 = {
+          comment3:comment3,            
+          temp_time:timeOfMessage                    
+        };
+
+        updateInfoComment(sender,senddataComment3);
+        handleMessages( messages,replyToken);        
+      }
+    break;
+
     default:
       console.log('da vao dc default case');
       console.log(replyToken);   
@@ -573,6 +592,30 @@ function updateInfoTemp(line_id,senddata) {
         [
           line_id,
           senddata.bodytemperature,
+          senddata.temp_time
+                    
+        ]);
+
+  });
+  pool.end();  
+	
+}
+
+function updateInfoComment(line_id,senddata) {
+  console.log('da vao addinfoComment vs line_id ben duoi');
+  console.log(line_id);
+
+  var pool = new pg.Pool(configfile.PG_CONFIG);
+  pool.connect(function(err, client, done) {
+    if (err) {
+        return console.error('Error acquiring client', err.stack);
+    }
+      let sql = 'INSERT INTO comment_line (line_id, comment, comment_time) ' + 'VALUES ($1, $2, $3)';
+                                  
+    client.query(sql,
+        [
+          line_id,
+          senddata.comment3,
           senddata.temp_time
                     
         ]);
