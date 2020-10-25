@@ -243,7 +243,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
         if (issafe != '' && safelocation != '' && safemess != '') {
           console.log('entered safe2 if1');
-          console.log(filteredContextsSafe2);
+          console.log(filteredContextsSafe2.length);
           //console.log(messages[messages.length - 1]);
           //handleMessages( messages,replyToken);
           //send button
@@ -255,10 +255,15 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         }
       
         
-      }else if (contexts[0].parameters.fields['issafe'] !='' ){
-          console.log('entered vao day');
+      }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' ){
+          console.log('entered safe button');
+          handleMessages( messages,replyToken);
       }else{
         console.log('entered safe2 if3');
+        console.log(contexts[0].parameters.fields['issafe'].stringValue);
+        console.log(contexts[0].parameters.fields['safelocation'].stringValue);
+        console.log(contexts[0].parameters.fields['safemess']);
+
         handleMessages( messages,replyToken);
       }
       
