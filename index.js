@@ -171,14 +171,14 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
   switch (action) {    
 
     case 'start':
-      console.log('da vao dc start');
+      console.log('entered start');
       start(sender);
       handleMessages( messages,replyToken);    
       break;
 
     case 'sub2':       
 
-      console.log('da vao dc sub2')
+      console.log('entered sub2')
       let filteredContextsSub2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_userinfo-yes-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -189,18 +189,18 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let userAdd = (contexts[0].parameters.fields['userAdd']) && contexts[0].parameters.fields['userAdd'] !='' ? contexts[0].parameters.fields["userAdd"].stringValue : '';        
         
         if (username !== '' && userID !== '' && userAdd !== '') {
-          console.log('da vao dc sub2 if1');
+          console.log('entered sub2 if1');
           //handleMessages( messages,replyToken);
           //send button
           sendButtonMessageSub2(replyToken,messages);
 
         }else{
-          console.log('da vao dc sub2 if2')
+          console.log('entered sub2 if2')
           handleMessages( messages,replyToken);
         }
           
       }else{
-        console.log('da vao dc sub2 if3');
+        console.log('entered sub2 if3');
         handleMessages( messages,replyToken);
       }
       
@@ -208,7 +208,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
     
     
     case 'sub3':
-      console.log('da vao dc sub3')
+      console.log('entered sub3')
       let filteredContextsSub3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_userinfo-yes-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -232,7 +232,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
 
     case 'safe2':       
 
-      console.log('da vao dc safe2')
+      console.log('entered safe2')
       let filteredContextsSafe2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -242,26 +242,27 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
         let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
         if (issafe != '' && safelocation != '' && safemess != '') {
-          console.log('da vao dc safe2 if1')
+          console.log('entered safe2 if1');
+          console.log(filteredContextsSafe2);
           //console.log(messages[messages.length - 1]);
           //handleMessages( messages,replyToken);
           //send button
           sendButtonMessageSub2(replyToken,messages);
 
         }else{
-          console.log('da vao dc safe2 if2')
+          console.log('entered safe2 if2')
           handleMessages( messages,replyToken);
         }
           
       }else{
-        console.log('da vao dc safe2 if3')
+        console.log('entered safe2 if3')
         handleMessages( messages,replyToken);
       }
       
     break;
 
     case 'safe3':
-      console.log('da vao dc safe3')
+      console.log('entered safe3')
       let filteredContextsSafe3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -285,7 +286,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       
     case 'temp2':       
 
-      console.log('da vao dc temp２')
+      console.log('entered temp２')
       let filteredContextsTemp2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_bodytemp-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -294,25 +295,25 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let bodytemperature2 = (contexts[0].parameters.fields['bodytemperature']) && contexts[0].parameters.fields['bodytemperature'] !='' ? contexts[0].parameters.fields["bodytemperature"].stringValue : '';        
         
         if(bodytemperature2 !== ''){
-          console.log('da vao dc temp２ if1')
+          console.log('entered temp２ if1')
           //handleMessages( messages,replyToken);
           //send button
           sendButtonMessage(replyToken,messages);
 
         }else{
-          console.log('da vao dc temp２ if2')
+          console.log('entered temp２ if2')
           handleMessages( messages,replyToken);
         }
           
       }else{
-        console.log('da vao dc temp２ if3')
+        console.log('entered temp２ if3')
         handleMessages( messages,replyToken);
       }
       
     break;
 
     case 'temp3':
-      console.log('da vao dc temp3')
+      console.log('entered temp3')
       let filteredContextsTemp3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_bodytemp-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -331,7 +332,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
     break;
 
     case 'comment3':
-      console.log('da vao dc comment3')
+      console.log('entered comment3')
       let filteredContextsComment3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_comment-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -350,7 +351,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
     break;
 
     default:
-      console.log('da vao dc default case');
+      console.log('entered default case');
       console.log(replyToken);   
       //console.log(JSON.stringify(messages));       
       handleMessages( messages,replyToken);
@@ -377,7 +378,7 @@ function handleMessages(messages, sender) {
 function handleMessage(message, token) {
     switch (message.message) {
         case "text": //text
-            console.log("da vao case text");
+            console.log("entered case text");
             
             message.text.text.forEach((text) => {
                 if (text !== '') {
