@@ -250,12 +250,15 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
           sendButtonMessageSub2(replyToken,messages);
 
         }else{
-          console.log('entered safe2 if2')
+          console.log('entered safe2 if2');
           handleMessages( messages,replyToken);
         }
-          
+      
+        
+      }else if (contexts[0].parameters.fields['issafe'] !='' ){
+          console.log('entered vao day');
       }else{
-        console.log('entered safe2 if3')
+        console.log('entered safe2 if3');
         handleMessages( messages,replyToken);
       }
       
