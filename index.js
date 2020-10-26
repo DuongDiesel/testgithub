@@ -260,13 +260,14 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue !='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
         console.log('entered safe2 3::sent location button');
         handleMessages( messages,replyToken);
-        //sendButtonMessageSafe(replyToken,messages);
+        sendButtonGetLocation(replyToken,messages);
       }else{
 
-        console.log('entered safe2 3::show what we got');
+        console.log('entered safe2 4::show what we got');
         console.log(contexts[0].parameters.fields['issafe'].stringValue);
         console.log(contexts[0].parameters.fields['safelocation'].stringValue);
         console.log(contexts[0].parameters.fields['safemess']);
+        console.log(contexts[0].parameters.fields['location'].stringValue);
 
         handleMessages( messages,replyToken);
       }
@@ -619,7 +620,7 @@ function updateInfoSafe(line_id,senddata) {
     if (err) {
         return console.error('Error acquiring client', err.stack);
     }
-      let sql = 'INSERT INTO safe_check (line_id, is_safe, safe_location, safe_mess, time_update) ' + 'VALUES ($1, $2, $3, $4, $5)';
+      let sql = 'INSERT INTO safe_check (line_id, is_safe, safe_location, safe_mess, time_update, location) ' + 'VALUES ($1, $2, $3, $4, $5, $6)';
                                   
     client.query(sql,
         [
@@ -627,9 +628,8 @@ function updateInfoSafe(line_id,senddata) {
           senddata.issafe,
           senddata.safelocation,
           senddata.safemess,
+          senddata.time_update,          
           senddata.location,
-          senddata.time_update          
-          
         ]);
 
   });
