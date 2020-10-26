@@ -237,12 +237,12 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
       if (filteredContextsSafe2.length > 0 && contexts[0].parameters){
-
+        console.log('entered safe2 1:: sent confirm button');
         let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
         let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
         let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
         if (issafe != '' && safelocation != '' && safemess != '') {
-          console.log('entered safe2 if1');
+          console.log('entered safe2 1.1');
           console.log(filteredContextsSafe2.length);
           //console.log(messages[messages.length - 1]);
           //handleMessages( messages,replyToken);
@@ -250,17 +250,20 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
           sendButtonMessageSub2(replyToken,messages);
 
         }else{
-          console.log('entered safe2 if2');
+          console.log('entered safe2 1.2::dont know whether to need it or not');
           handleMessages( messages,replyToken);
         }
-      
-        
-      }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' ){
-          console.log('entered safe button');
-          //handleMessages( messages,replyToken);
-          sendButtonMessageSafe(replyToken,messages);
+
+      }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
+        console.log('entered safe2 2::sent safe or not button');
+        sendButtonMessageSafe(replyToken,messages);
+      }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue !='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
+        console.log('entered safe2 3::sent location button');
+        handleMessages( messages,replyToken);
+        //sendButtonMessageSafe(replyToken,messages);
       }else{
-        console.log('entered safe2 if3');
+
+        console.log('entered safe2 3::show what we got');
         console.log(contexts[0].parameters.fields['issafe'].stringValue);
         console.log(contexts[0].parameters.fields['safelocation'].stringValue);
         console.log(contexts[0].parameters.fields['safemess']);
@@ -279,12 +282,14 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
 
         let issafe = (contexts[0].parameters.fields['issafe']) && contexts[0].parameters.fields['issafe'] !='' ? contexts[0].parameters.fields["issafe"].stringValue : '';        
         let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
-        let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';        
+        let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';
+        let location = (contexts[0].parameters.fields['location']) && contexts[0].parameters.fields['location'] !='' ? contexts[0].parameters.fields["location"].stringValue : '';        
 
         let senddataSafe3 = {
           issafe:issafe,          
           safelocation:safelocation,
           safemess:safemess,
+          location:location,
           time_update:timeOfMessage                    
         };
 
@@ -463,10 +468,8 @@ function sendButtonMessageSub2(token,messages) {
 
 function sendButtonMessageSafe(token,messages) {
   
-  console.log("da gui button safe or not ");
-  //console.log(messages);
-  //console.log(messages[messages.length - 1]);
-  //console.log(messages[messages.length - 1].text.text[0].length);  
+  console.log("sent safe or not button");
+  
   return client.replyMessage(
     token,
 
@@ -477,27 +480,18 @@ function sendButtonMessageSafe(token,messages) {
         "items": [
           {
             "type": "action", // ③
-            "imageUrl": "https://example.com/sushi.png",
             "action": {
               "type": "message",
-              "label": "Sushi",
-              "text": "Sushi"
+              "label": "安全",
+              "text": "Safe"
             }
           },
           {
             "type": "action",
-            "imageUrl": "https://example.com/tempura.png",
             "action": {
               "type": "message",
-              "label": "Tempura",
-              "text": "Tempura"
-            }
-          },
-          {
-            "type": "action", // ④
-            "action": {
-              "type": "location",
-              "label": "Send location"
+              "label": "安全ではない",
+              "text": "Not Safe"
             }
           }
         ]
@@ -506,6 +500,41 @@ function sendButtonMessageSafe(token,messages) {
 
   );
 }
+
+function sendButtonGetLocation(token,messages) {
+  
+  console.log("sent get location button");
+  
+  return client.replyMessage(
+    token,
+
+    {
+      "type": "text", // ①
+      "text": messages[messages.length - 1].text.text[0],
+      "quickReply": { // ②
+        "items": [
+          {
+            "type": "action", // ③
+            "action": {
+              "type": "location",
+              "label": "Send location"
+            }
+          },
+          {
+            "type": "action",
+            "action": {
+              "type": "message",
+              "label": "Dont send",
+              "text": "no"
+            }
+          }
+        ]
+      }
+    }
+
+  );
+}
+
 
 function start(userId, replyToken){
   client.getProfile(userId)
@@ -598,6 +627,7 @@ function updateInfoSafe(line_id,senddata) {
           senddata.issafe,
           senddata.safelocation,
           senddata.safemess,
+          senddata.location,
           senddata.time_update          
           
         ]);
