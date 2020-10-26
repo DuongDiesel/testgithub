@@ -100,9 +100,16 @@ function handleEvent(event) {
             // kiểm tra xem trong cái sessionIds (là 1 map) xem là có senderID hay không.tác dụng hàm has.dấu ! tức là nếu ko có senderID
            sessionIds.set(senderID, uuid.v1());   // thì tạo 1 set mới
            }
-          var messageText = message.address;
+          //var messageText = message.address;//lay dia chi
+          var lat= message.latitude.toString();
+          var long = message.longitude.toString();
+          console.log(lat);
+          console.log(long);
+          var messageText = lat+"and"+long;//lay kinh do vi do
+          console.log(messageText);
           sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
           //console.log(event);
+          
           break; 
 
         default:
@@ -301,15 +308,17 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
         let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';
         let location = (contexts[0].parameters.fields['location']) && contexts[0].parameters.fields['location'] !='' ? contexts[0].parameters.fields["location"].stringValue : '';        
-
+        let latitude = (contexts[0].parameters.fields['latitude']) && contexts[0].parameters.fields['latitude'] !='' ? contexts[0].parameters.fields["latitude"].stringValue : '';        
+        let longitude = (contexts[0].parameters.fields['longitude']) && contexts[0].parameters.fields['longitude'] !='' ? contexts[0].parameters.fields["longitude"].stringValue : '';        
         let senddataSafe3 = {
           issafe:issafe,          
           safelocation:safelocation,
           safemess:safemess,
           location:location,
+
           time_update:timeOfMessage                    
         };
-
+        console.log(contexts[0].parameters);
         updateInfoSafe(sender,senddataSafe3);
         handleMessages( messages,replyToken);        
       }
@@ -317,7 +326,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       
     case 'temp2':       
 
-      console.log('entered temp２')
+      console.log('entered temp２');
       let filteredContextsTemp2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('isubmit_bodytemp-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
