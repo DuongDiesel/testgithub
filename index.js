@@ -154,10 +154,15 @@ async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, pa
       };
 
       // khi có phản hồi từ dialogflow thì ta xử lí nó
+      //console.log('textString is');
+      //console.log(textString);
       const responses = await sessionClient.detectIntent(request);
-      
+      //console.log('responses is');
+      //console.log(responses);
       // đọc cái mà dialogflow gửi cho ta
       const result = responses[0].queryResult;
+      console.log('result.fulfillmentMessages is');
+      console.log(result.fulfillmentMessages);
       handleDialogFlowResponse(sender, result, replyToken,timeOfMessage);
       
       console.log(' entered sendToDialogFlow')
@@ -177,8 +182,9 @@ function handleDialogFlowResponse(sender, response, replyToken,timeOfMessage) {
   let action = response.action;
   let contexts = response.outputContexts;
   let parameters = response.parameters;
-  console.log(JSON.stringify(responseText));
-  
+  //console.log(JSON.stringify(responseText));
+  console.log('parameters is');
+  console.log(parameters);
 
   if (isDefined(action)) {
       handleDialogFlowAction(sender, action, messages, contexts, parameters, replyToken,timeOfMessage);
