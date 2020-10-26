@@ -257,8 +257,8 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         
       }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' ){
           console.log('entered safe button');
-          //sendButtonMessageSafe(replyToken,messages);
-          handleMessages( messages,replyToken);
+          //handleMessages( messages,replyToken);
+          sendButtonMessageSafe(replyToken,messages);
       }else{
         console.log('entered safe2 if3');
         console.log(contexts[0].parameters.fields['issafe'].stringValue);
@@ -469,21 +469,41 @@ function sendButtonMessageSafe(token,messages) {
   //console.log(messages[messages.length - 1].text.text[0].length);  
   return client.replyMessage(
     token,
+
     {
-      type: 'template',
-      altText: 'Buttons alt text',
-      template: {
-        type: 'buttons',
-        
-        title: '今の安否状況は？',
-        text: '',
-        actions: [
-          
-          { label: 'Safe', type: 'message', text: 'safe' },
-          { label: 'Not safe', type: 'message', text: 'not safe' }
-        ],
-      },
+      "type": "text", // ①
+      "text": messages[messages.length - 1].text.text[0],
+      "quickReply": { // ②
+        "items": [
+          {
+            "type": "action", // ③
+            "imageUrl": "https://example.com/sushi.png",
+            "action": {
+              "type": "message",
+              "label": "Sushi",
+              "text": "Sushi"
+            }
+          },
+          {
+            "type": "action",
+            "imageUrl": "https://example.com/tempura.png",
+            "action": {
+              "type": "message",
+              "label": "Tempura",
+              "text": "Tempura"
+            }
+          },
+          {
+            "type": "action", // ④
+            "action": {
+              "type": "location",
+              "label": "Send location"
+            }
+          }
+        ]
+      }
     }
+
   );
 }
 
