@@ -259,7 +259,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         sendButtonMessageSafe(replyToken,messages);
       }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue !='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
         console.log('entered safe2 3::sent location button');
-        handleMessages( messages,replyToken);
+        //handleMessages( messages,replyToken);
         sendButtonGetLocation(replyToken,messages);
       }else{
 
@@ -267,7 +267,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         console.log(contexts[0].parameters.fields['issafe'].stringValue);
         console.log(contexts[0].parameters.fields['safelocation'].stringValue);
         console.log(contexts[0].parameters.fields['safemess']);
-        console.log(contexts[0].parameters.fields['location'].stringValue);
+        console.log(contexts[0].parameters.fields['location']);
 
         handleMessages( messages,replyToken);
       }
