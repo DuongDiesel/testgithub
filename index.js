@@ -257,7 +257,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         
       }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' ){
           console.log('entered safe button');
-          sendButtonMessageSafe(replyToken,messages);
+          //sendButtonMessageSafe(replyToken,messages);
       }else{
         console.log('entered safe2 if3');
         console.log(contexts[0].parameters.fields['issafe'].stringValue);
