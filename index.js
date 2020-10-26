@@ -73,7 +73,7 @@ function handleEvent(event) {
       switch (message.type) {
         case 'text':
 
-        
+
           //return handleText(message, event.replyToken, event.source);
           var senderID = event.source.userId;
           
@@ -91,11 +91,27 @@ function handleEvent(event) {
           }          
          break;
 
+         case 'location':
+          var senderID = event.source.userId;
+          
+          var timeOfMessage = event.timestamp;
+
+          if (!sessionIds.has(senderID)) { 
+            // kiểm tra xem trong cái sessionIds (là 1 map) xem là có senderID hay không.tác dụng hàm has.dấu ! tức là nếu ko có senderID
+           sessionIds.set(senderID, uuid.v1());   // thì tạo 1 set mới
+           }
+          var messageText = message.address;
+          sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
+          //console.log(event);
+          break; 
+
         default:
           throw new Error(`Unknown message: ${JSON.stringify(message)}`);
       }
       break;    
-
+    
+    
+      
     default:
       throw new Error(`Unknown event: ${JSON.stringify(event)}`);
   }
@@ -137,7 +153,7 @@ async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, pa
       const result = responses[0].queryResult;
       handleDialogFlowResponse(sender, result, replyToken,timeOfMessage);
       
-      console.log(' da vao sendToDialogFlow')
+      console.log(' entered sendToDialogFlow')
   } catch (e) {
       console.log('error');
       console.log(e);
@@ -260,7 +276,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue !='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
         console.log('entered safe2 3::sent location button');
         //handleMessages( messages,replyToken);
-        sendButtonGetLocation(replyToken,messages);
+        sendButtonGetLocation(replyToken,messages);//xu li cai mess nay
       }else{
 
         console.log('entered safe2 4::show what we got');
