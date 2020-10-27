@@ -105,7 +105,7 @@ function handleEvent(event) {
           var long = message.longitude.toString();
           
           var messageText = lat+','+long;//lay kinh do vi do
-          console.log(messageText);
+          //console.log(messageText);
           sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
           
           
@@ -292,7 +292,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         //console.log(contexts[0].parameters.fields['issafe'].stringValue);
         //console.log(contexts[0].parameters.fields['safelocation'].stringValue);
         //console.log(contexts[0].parameters.fields['safemess']);
-        console.log(contexts[0].parameters.fields['location']);
+        //console.log(contexts[0].parameters.fields['location']);
 
         handleMessages( messages,replyToken);
       }
@@ -310,8 +310,6 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         let safelocation = (contexts[0].parameters.fields['safelocation']) && contexts[0].parameters.fields['safelocation'] !='' ? contexts[0].parameters.fields["safelocation"].stringValue : '';
         let safemess = (contexts[0].parameters.fields['safemess']) && contexts[0].parameters.fields['safemess'] !='' ? contexts[0].parameters.fields["safemess"].stringValue : '';
         let location = (contexts[0].parameters.fields['location']) && contexts[0].parameters.fields['location'] !='' ? contexts[0].parameters.fields["location"].stringValue : '';        
-        let latitude = (contexts[0].parameters.fields['latitude']) && contexts[0].parameters.fields['latitude'] !='' ? contexts[0].parameters.fields["latitude"].stringValue : '';        
-        let longitude = (contexts[0].parameters.fields['longitude']) && contexts[0].parameters.fields['longitude'] !='' ? contexts[0].parameters.fields["longitude"].stringValue : '';        
         let senddataSafe3 = {
           issafe:issafe,          
           safelocation:safelocation,
@@ -320,7 +318,6 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
 
           time_update:timeOfMessage                    
         };
-        console.log(contexts[0].parameters);
         updateInfoSafe(sender,senddataSafe3);
         handleMessages( messages,replyToken);        
       }
