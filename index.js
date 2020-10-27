@@ -103,12 +103,11 @@ function handleEvent(event) {
           //var messageText = message.address;//lay dia chi
           var lat= message.latitude.toString();
           var long = message.longitude.toString();
-          console.log(lat);
-          console.log(long);
+          
           var messageText = lat+"and"+long;//lay kinh do vi do
-          console.log(messageText);
+          //console.log(messageText);
           sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
-          //console.log(event);
+          
           
           break; 
 
@@ -154,12 +153,9 @@ async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, pa
       };
 
       // khi có phản hồi từ dialogflow thì ta xử lí nó
-      //console.log('textString is');
-      //console.log(textString);
+      
       const responses = await sessionClient.detectIntent(request);
-      //console.log('responses is');
-      //console.log(responses);
-      // đọc cái mà dialogflow gửi cho ta
+      
       const result = responses[0].queryResult;
       console.log('result.fulfillmentMessages is');
       console.log(result.fulfillmentMessages);
@@ -175,17 +171,14 @@ async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, pa
 
 function handleDialogFlowResponse(sender, response, replyToken,timeOfMessage) {
   // phân tích cái mà dialogFlow gửi về
-  //console.log(response);
+  
   let responseText = response.fulfillmentMessages.fulfillmentText;
 
   let messages = response.fulfillmentMessages;
   let action = response.action;
   let contexts = response.outputContexts;
   let parameters = response.parameters;
-  //console.log(JSON.stringify(responseText));
-  console.log('parameters is');
-  console.log(parameters);
-
+  
   if (isDefined(action)) {
       handleDialogFlowAction(sender, action, messages, contexts, parameters, replyToken,timeOfMessage);
       console.log('handleDialogFlowResponse defined action'); 
@@ -397,7 +390,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
     break;
 
     default:
-      console.log('entered default case');
+      console.log('entered handleDialogFlowAction default case');
       console.log(replyToken);   
       //console.log(JSON.stringify(messages));       
       handleMessages( messages,replyToken);
@@ -416,7 +409,7 @@ function handleMessages(messages, sender) {
         
         timeout = i * timeoutInterval;
         setTimeout(handleMessage.bind(null, messages[i], sender), timeout);
-        console.log('da vao handleMessages');
+        console.log('entered handleMessages');
     }      
   }
 }
@@ -424,7 +417,7 @@ function handleMessages(messages, sender) {
 function handleMessage(message, token) {
     switch (message.message) {
         case "text": //text
-            console.log("entered case text");
+            console.log("entered handleMessage case text");
             
             message.text.text.forEach((text) => {
                 if (text !== '') {
@@ -618,7 +611,7 @@ function start(userId, replyToken){
 }
 
 function updateInfoUser(line_id,senddata) {
-  console.log('da vao updateUserinfo vs line_id ben duoi');
+  console.log('entered updateUserinfo with line_id:');
   console.log(line_id);
 
   var pool = new pg.Pool(configfile.PG_CONFIG);
@@ -643,7 +636,7 @@ function updateInfoUser(line_id,senddata) {
 }
 
 function updateInfoSafe(line_id,senddata) {
-  console.log('da vao addinfosafe vs fb_id ben duoi');
+  console.log('entered updateInfoSafe with line_id :');
   console.log(line_id);
 
   var pool = new pg.Pool(configfile.PG_CONFIG);
@@ -669,8 +662,8 @@ function updateInfoSafe(line_id,senddata) {
 }
 
 function updateInfoTemp(line_id,senddata) {
-  console.log('da vao addinfoTemp3 vs line_id ben duoi');
-  console.log(line_id);
+  console.log('entered updateInfoTemp with line_id:');
+  //console.log(line_id);
 
   var pool = new pg.Pool(configfile.PG_CONFIG);
   pool.connect(function(err, client, done) {
@@ -693,7 +686,7 @@ function updateInfoTemp(line_id,senddata) {
 }
 
 function updateInfoComment(line_id,senddata) {
-  console.log('da vao addinfoComment vs line_id ben duoi');
+  console.log('entered updateInfoComment with line_id:');
   console.log(line_id);
 
   var pool = new pg.Pool(configfile.PG_CONFIG);
