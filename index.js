@@ -104,8 +104,8 @@ function handleEvent(event) {
           var lat= message.latitude.toString();
           var long = message.longitude.toString();
           
-          var messageText = lat+" "+long;//lay kinh do vi do
-          //console.log(messageText);
+          var messageText = lat+' '+long;//lay kinh do vi do
+          console.log(messageText);
           sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
           
           
@@ -157,8 +157,8 @@ async function sendToDialogFlow(sender, textString, replyToken,timeOfMessage, pa
       const responses = await sessionClient.detectIntent(request);
       
       const result = responses[0].queryResult;
-      console.log('result.fulfillmentMessages is');
-      console.log(result.fulfillmentMessages);
+      //console.log('result.fulfillmentMessages is');
+      //console.log(result.fulfillmentMessages);
       handleDialogFlowResponse(sender, result, replyToken,timeOfMessage);
       
       console.log(' entered sendToDialogFlow')
@@ -279,16 +279,19 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }else if (contexts[0].parameters.fields['issafe'].stringValue =='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
         console.log('entered safe2 2::sent safe or not button');
         sendButtonMessageSafe(replyToken,messages);
+      }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue =='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
+        console.log('entered safe2 2::sent home or school button');
+        sendButtonMessageHomeSchool(replyToken,messages);
       }else if (contexts[0].parameters.fields['issafe'].stringValue !='' &&contexts[0].parameters.fields['safelocation'].stringValue !='' &&contexts[0].parameters.fields['safemess'].stringValue =='' &&contexts[0].parameters.fields['location'].stringValue =='' ){
         console.log('entered safe2 3::sent location button');
         //handleMessages( messages,replyToken);
         sendButtonGetLocation(replyToken,messages);//xu li cai mess nay
       }else{
 
-        console.log('entered safe2 4::show what we got');
-        console.log(contexts[0].parameters.fields['issafe'].stringValue);
-        console.log(contexts[0].parameters.fields['safelocation'].stringValue);
-        console.log(contexts[0].parameters.fields['safemess']);
+        //console.log('entered safe2 4::show what we got');
+        //console.log(contexts[0].parameters.fields['issafe'].stringValue);
+        //console.log(contexts[0].parameters.fields['safelocation'].stringValue);
+        //console.log(contexts[0].parameters.fields['safemess']);
         console.log(contexts[0].parameters.fields['location']);
 
         handleMessages( messages,replyToken);
@@ -517,6 +520,49 @@ function sendButtonMessageSafe(token,messages) {
               "type": "message",
               "label": "安全ではない",
               "text": "Not Safe"
+            }
+          }
+        ]
+      }
+    }
+
+  );
+}
+
+function sendButtonMessageHomeSchool(token,messages) {
+  
+  console.log("sent safe or not button");
+  
+  return client.replyMessage(
+    token,
+
+    {
+      "type": "text", // ①
+      "text": messages[messages.length - 1].text.text[0],
+      "quickReply": { // ②
+        "items": [
+          {
+            "type": "action", // ③
+            "action": {
+              "type": "message",
+              "label": "家",
+              "text": "家"
+            }
+          },
+          {
+            "type": "action",
+            "action": {
+              "type": "message",
+              "label": "キャンパス",
+              "text": "キャンパス"
+            }
+          },
+          {
+            "type": "action",
+            "action": {
+              "type": "message",
+              "label": "その他",
+              "text": "その他"
             }
           }
         ]
