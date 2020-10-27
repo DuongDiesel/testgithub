@@ -104,7 +104,7 @@ function handleEvent(event) {
           var lat= message.latitude.toString();
           var long = message.longitude.toString();
           
-          var messageText = lat+' '+long;//lay kinh do vi do
+          var messageText = lat+','+long;//lay kinh do vi do
           console.log(messageText);
           sendToDialogFlow(senderID, messageText,event.replyToken,timeOfMessage); 
           
