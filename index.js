@@ -432,7 +432,7 @@ function handleMessage(message, token) {
 function sendTextMessage(token, texts) {
   texts = Array.isArray(texts) ? texts : [texts];
 
-  console.log("da gui tin nhan ");
+  //console.log("replyMessage to user ");
   return client.replyMessage(
     token,
     texts.map((text) => ({ type: 'text', text }))
@@ -441,7 +441,7 @@ function sendTextMessage(token, texts) {
 
 function sendButtonMessage(token,messages) {
   
-  console.log("da gui button ");
+  console.log("sent confirm button ");
   //console.log(messages);
   //console.log(messages[messages.length - 1]);
   console.log(messages[messages.length - 1].quickReplies.title);  
@@ -467,7 +467,7 @@ function sendButtonMessage(token,messages) {
 
 function sendButtonMessageSub2(token,messages) {
   
-  console.log("da gui button sub2 ");
+  console.log("sent ButtonMessageSub2 ");
   //console.log(messages);
   //console.log(messages[messages.length - 1]);
   console.log(messages[messages.length - 1].text.text[0].length);  
