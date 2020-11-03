@@ -269,6 +269,7 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
           //console.log(messages[messages.length - 1]);
           //handleMessages( messages,replyToken);
           //send button
+          console.log("test");
           sendButtonMessageSub2(replyToken,messages);
 
         }else{
