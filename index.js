@@ -252,9 +252,14 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
+    case 'safe1':
+      console.log('entered safe1');
+      sendButtonOk(replyToken,messages);
+    break;
+
     case 'safe2':       
 
-      console.log('entered safe2')
+      console.log('entered safe2');
       let filteredContextsSafe2 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
         return el.name.includes('submit_safe-custom-followup') //name of contexts......ten cua cai context luu cac gia tri.
       });
@@ -595,6 +600,41 @@ function sendButtonGetLocation(token,messages) {
               "type": "message",
               "label": "Dont send",
               "text": "no"
+            }
+          }
+        ]
+      }
+    }
+
+  );
+}
+
+function sendButtonOk(token,messages) {
+  
+  console.log("sent ok button");
+  
+  return client.replyMessage(
+    token,
+
+    {
+      "type": "text", // ①
+      "text": messages[messages.length - 1].text.text[0],
+      "quickReply": { // ②
+        "items": [
+          {
+            "type": "action", // ③
+            "action": {
+              "type": "message",
+              "label": "Ok",
+              "text": "Ok"
+            }
+          },
+          {
+            "type": "action",
+            "action": {
+              "type": "message",
+              "label": "間違う",
+              "text": "間違う"
             }
           }
         ]
