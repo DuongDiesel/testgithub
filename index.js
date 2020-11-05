@@ -327,6 +327,11 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
         handleMessages( messages,replyToken);        
       }
     break;
+
+    case 'temp1':
+      console.log('entered temp1');
+      sendButtonOk(replyToken,messages);
+    break;
       
     case 'temp2':       
 
