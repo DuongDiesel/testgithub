@@ -381,6 +381,12 @@ function handleDialogFlowAction(sender, action, messages, contexts, parameters,r
       }
     break;
 
+    case 'comment1':
+            console.log('entered temp3');
+            sendButtonOk(replyToken,messages);
+
+    break;
+
     case 'comment3':
       console.log('entered comment3')
       let filteredContextsComment3 = contexts.filter(function (el){ //Phương thức filter() dùng để tạo một mảng mới với tất cả các phần tử thỏa điều kiện của một hàm test.
